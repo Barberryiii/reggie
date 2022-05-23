@@ -1,13 +1,17 @@
-package com.xzkj.domain;
+package com.xzkj.reggie.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * 员工表
+ */
 @Data
-public class Employee {
+public class Employee implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
