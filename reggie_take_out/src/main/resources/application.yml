@@ -8,15 +8,15 @@ spring:
     password: 123456
     type: com.alibaba.druid.pool.DruidDataSource
   main:
-    #²»ÏÔÊ¾Æô¶¯Í¼±ê
+    #ä¸æ˜¾ç¤ºå¯åŠ¨å›¾æ ‡
     banner-mode: off
 mybatis-plus:
   configuration:
-    #¿ªÆôsqlÓï¾äÈÕÖ¾Êä³ö
+    #å¼€å¯sqlè¯­å¥æ—¥å¿—è¾“å‡º
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    #ÔÚÓ³ÉäÊµÌå»òÕßÊôĞÔÊ±£¬½«Êı¾İ¿âÖĞ±íÃûºÍ×Ö¶ÎÃûÖĞµÄÏÂ»®ÏßÈ¥µô£¬°´ÕÕÍÕ·åÃüÃû·¨Ó³Éä
+    #åœ¨æ˜ å°„å®ä½“æˆ–è€…å±æ€§æ—¶ï¼Œå°†æ•°æ®åº“ä¸­è¡¨åå’Œå­—æ®µåä¸­çš„ä¸‹åˆ’çº¿å»æ‰ï¼ŒæŒ‰ç…§é©¼å³°å‘½åæ³•æ˜ å°„
     map-underscore-to-camel-case: true
   global-config:
-    #²»ÏÔÊ¾Æô¶¯Í¼±ê
+    #ä¸æ˜¾ç¤ºå¯åŠ¨å›¾æ ‡
     banner: false
 
