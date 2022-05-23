@@ -1,2 +1,2 @@
-# reggie
-reggie_take_out
+# 瑞吉外卖
+一个专业的外卖平台
