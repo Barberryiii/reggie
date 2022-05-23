@@ -1,0 +1,22 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/reggie?serverTimezone=UTC&characterEncoding=utf-8&useSSL=false
+    username: user
+    password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
+  main:
+    #不显示启动图标
+    banner-mode: off
+mybatis-plus:
+  configuration:
+    #开启sql语句日志输出
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    #在映射实体或者属性时，将数据库中表名和字段名中的下划线去掉，按照驼峰命名法映射
+    map-underscore-to-camel-case: true
+  global-config:
+    #不显示启动图标
+    banner: false
+
