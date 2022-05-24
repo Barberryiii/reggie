@@ -32,27 +32,27 @@ public class EmployeeController {
         String username = employee.getUsername();
         String password = employee.getPassword();
 
-        // 1.将页面提交的密码password进行md5加密处理
+        // 1、将页面提交的密码password进行md5加密处理
         password = DigestUtils.md5DigestAsHex(password.getBytes());
 
-        // 2.根据页面提交的username查询数据库
+        // 2、根据页面提交的username查询数据库
         LambdaQueryWrapper<Employee> qw = new LambdaQueryWrapper<>();
         qw.eq(Employee::getUsername, username);
         Employee one = employeeService.getOne(qw);
 
-        // 3.如果没有查询到返回登录失败结果
+        // 3、如果没有查询到返回登录失败结果
         if(one == null)
             return R.error("用户名或密码错误");
 
-        // 4.密码比对，如果不一致则返回登录失败结果
+        // 4、密码比对，如果不一致则返回登录失败结果
         if(!one.getPassword().equals(password))
             return R.error("用户名或密码错误");
 
-        // 5.查看员工状态，如果为已禁用状态，则返回员工已禁用结果
+        // 5、查看员工状态，如果为已禁用状态，则返回员工已禁用结果
         if(one.getStatus() == 0)
             return R.error("账号已禁用");
 
-        // 6.登录成功，将员工id存入Session并返回登陆成功结果
+        // 6、登录成功，将员工id存入Session并返回登陆成功结果
         request.getSession().setAttribute("employee", one.getId());
 
         return R.success(one);
