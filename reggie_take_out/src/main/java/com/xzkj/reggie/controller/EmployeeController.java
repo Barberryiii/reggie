@@ -1,18 +1,19 @@
 package com.xzkj.reggie.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 import com.xzkj.reggie.common.R;
 import com.xzkj.reggie.entity.Employee;
 import com.xzkj.reggie.service.EmployeeService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 
 @Slf4j
 @RestController
@@ -67,6 +68,87 @@ public class EmployeeController {
     public R<String> logout(HttpServletRequest request){
         request.getSession().removeAttribute("employee");
         return R.success("退出成功");
+    }
+
+    /**
+     * 分页查询
+     * @param page
+     * @param pageSize
+     * @param name
+     * @return
+     */
+    @GetMapping("/page")
+    public R<Page> page(int page, int pageSize, String name){
+        // 分页构造器
+        Page pageInfo = new Page(page, pageSize);
+
+        // 条件构造器
+        LambdaQueryWrapper<Employee> qw = new LambdaQueryWrapper<>();
+        // 过滤条件
+        qw.like(StringUtils.isNotEmpty(name), Employee::getName, name);
+        // 排序条件
+        qw.orderByDesc(Employee::getUpdateTime);
+
+        // 查询
+        employeeService.page(pageInfo, qw);
+
+        return R.success(pageInfo);
+    }
+
+    /**
+     * 新增员工
+     * @param request
+     * @param employee
+     * @return
+     */
+    @PostMapping
+    public R<String> add(HttpServletRequest request, @RequestBody Employee employee){
+        //设置初始密码123456，使用md5加密处理
+        employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
+        
+        employee.setCreateTime(LocalDateTime.now());
+        employee.setUpdateTime(LocalDateTime.now());
+
+        long empId = (long) request.getSession().getAttribute("employee");
+        employee.setCreateUser(empId);
+        employee.setUpdateUser(empId);
+
+        employeeService.save(employee);
+
+        return R.success("");
+    }
+
+    /**
+     * 根据id修改员工信息
+     * @param request
+     * @param employee
+     * @return
+     */
+    @PutMapping
+    public R<String> update(HttpServletRequest request, @RequestBody Employee employee){
+        long empId = (long) request.getSession().getAttribute("employee");
+        employee.setUpdateUser(empId);
+        employee.setUpdateTime(LocalDateTime.now());
+
+        employeeService.updateById(employee);
+
+        return R.success("员工信息修改成功");
+    }
+
+    /**
+     * 根据id查询员工信息
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    public R<Employee> getById(@PathVariable long id){
+        Employee emp = employeeService.getById(id);
+
+        if(emp == null){
+            return R.error("没有查询到对应员工信息");
+        }
+
+        return R.success(emp);
     }
 
 }
