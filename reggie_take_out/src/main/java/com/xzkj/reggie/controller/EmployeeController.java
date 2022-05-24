@@ -108,7 +108,7 @@ public class EmployeeController {
 
         employeeService.save(employee);
 
-        return R.success("");
+        return R.success("新增员工成功");
     }
 
     /**
