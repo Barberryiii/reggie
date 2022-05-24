@@ -21,6 +21,12 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
+    /**
+     * 员工登录
+     * @param request
+     * @param employee
+     * @return
+     */
     @PostMapping("/login")
     public R<Employee> login(HttpServletRequest request, @RequestBody Employee employee){
         String username = employee.getUsername();
@@ -44,12 +50,23 @@ public class EmployeeController {
 
         // 5.查看员工状态，如果为已禁用状态，则返回员工已禁用结果
         if(one.getStatus() == 0)
-            return R.error("用户名或密码错误");
+            return R.error("账号已禁用");
 
         // 6.登录成功，将员工id存入Session并返回登陆成功结果
-        request.getSession().setAttribute("employee", one);
+        request.getSession().setAttribute("employee", one.getId());
 
         return R.success(one);
+    }
+
+    /**
+     * 员工退出
+     * @param request
+     * @return
+     */
+    @PostMapping("/logout")
+    public R<String> logout(HttpServletRequest request){
+        request.getSession().removeAttribute("employee");
+        return R.success("退出成功");
     }
 
 }
