@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -132,5 +133,31 @@ public class DishController {
         DishDto dishDto = dishService.getByIdWithFlavor(id);
 
         return R.success(dishDto);
+    }
+
+    /**
+     * 根据ids批量修改状态
+     * @param status
+     * @param ids
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    public R<String> changeStatus(@PathVariable int status, Long[] ids){
+        List<Dish> list = new ArrayList<>();
+        for (Long id : ids) {
+            Dish dish = new Dish();
+            dish.setId(id);
+            dish.setStatus(status);
+            list.add(dish);
+        }
+        dishService.updateBatchById(list);
+        return R.success("");
+    }
+
+    @DeleteMapping
+    public R<String> delete(Long[] ids){
+        dishService.removeByIds(Arrays.asList(ids));
+
+        return R.success("");
     }
 }
