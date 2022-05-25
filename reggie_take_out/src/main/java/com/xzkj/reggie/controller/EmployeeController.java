@@ -29,7 +29,7 @@ public class EmployeeController {
      * @return
      */
     @PostMapping("/login")
-    public R<Employee> login(HttpServletRequest request, @RequestBody Employee employee){
+    public R<Employee> login(HttpServletRequest request, @RequestBody Employee employee) {
         String username = employee.getUsername();
         String password = employee.getPassword();
 
@@ -42,15 +42,15 @@ public class EmployeeController {
         Employee one = employeeService.getOne(qw);
 
         // 3、如果没有查询到返回登录失败结果
-        if(one == null)
+        if (one == null)
             return R.error("用户名或密码错误");
 
         // 4、密码比对，如果不一致则返回登录失败结果
-        if(!one.getPassword().equals(password))
+        if (!one.getPassword().equals(password))
             return R.error("用户名或密码错误");
 
         // 5、查看员工状态，如果为已禁用状态，则返回员工已禁用结果
-        if(one.getStatus() == 0)
+        if (one.getStatus() == 0)
             return R.error("账号已禁用");
 
         // 6、登录成功，将员工id存入Session并返回登陆成功结果
@@ -65,7 +65,7 @@ public class EmployeeController {
      * @return
      */
     @PostMapping("/logout")
-    public R<String> logout(HttpServletRequest request){
+    public R<String> logout(HttpServletRequest request) {
         request.getSession().removeAttribute("employee");
         return R.success("退出成功");
     }
@@ -78,7 +78,7 @@ public class EmployeeController {
      * @return
      */
     @GetMapping("/page")
-    public R<Page> page(int page, int pageSize, String name){
+    public R<Page> page(int page, int pageSize, String name) {
         // 分页构造器
         Page pageInfo = new Page(page, pageSize);
 
@@ -102,7 +102,7 @@ public class EmployeeController {
      * @return
      */
     @PostMapping
-    public R<String> save(HttpServletRequest request, @RequestBody Employee employee){
+    public R<String> save(HttpServletRequest request, @RequestBody Employee employee) {
         //设置初始密码123456，使用md5加密处理
         employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
 
@@ -117,7 +117,7 @@ public class EmployeeController {
      * @return
      */
     @PutMapping
-    public R<String> update(@RequestBody Employee employee){
+    public R<String> update(@RequestBody Employee employee) {
         employeeService.updateById(employee);
 
         return R.success("员工信息修改成功");
@@ -129,10 +129,10 @@ public class EmployeeController {
      * @return
      */
     @GetMapping("/{id}")
-    public R<Employee> getById(@PathVariable long id){
+    public R<Employee> getById(@PathVariable Long id) {
         Employee emp = employeeService.getById(id);
 
-        if(emp == null){
+        if (emp == null) {
             return R.error("没有查询到对应员工信息");
         }
 

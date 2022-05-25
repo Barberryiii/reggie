@@ -18,6 +18,7 @@ import java.io.IOException;
 public class LoginCheckFilter implements Filter {
     // 路径匹配器，支持通配符
     private static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
+
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
@@ -37,14 +38,14 @@ public class LoginCheckFilter implements Filter {
         boolean check = check(urls, requestURI);
 
         // 3、如果不需要处理，则直接放行
-        if(check){
+        if (check) {
             filterChain.doFilter(request, response);
             return;
         }
 
         // 4、判断登陆状态，如果已登录，则直接放行
         Long empId = (Long) request.getSession().getAttribute("employee");
-        if(empId != null){
+        if (empId != null) {
             BaseContext.setCurrentId(empId);
             filterChain.doFilter(request, response);
             return;
@@ -62,9 +63,9 @@ public class LoginCheckFilter implements Filter {
      * @param requestURI
      * @return
      */
-    public boolean check(String[] urls, String requestURI){
+    public boolean check(String[] urls, String requestURI) {
         for (String url : urls) {
-            if(PATH_MATCHER.match(url, requestURI)) return true;
+            if (PATH_MATCHER.match(url, requestURI)) return true;
         }
         return false;
     }

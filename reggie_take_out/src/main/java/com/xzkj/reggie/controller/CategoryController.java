@@ -20,7 +20,7 @@ public class CategoryController {
      * @return
      */
     @PostMapping
-    public R<String> save(@RequestBody Category category){
+    public R<String> save(@RequestBody Category category) {
         categoryService.save(category);
 
         return R.success("新增分类成功");
@@ -33,7 +33,7 @@ public class CategoryController {
      * @return
      */
     @GetMapping("/page")
-    public R<Page> page(int page, int pageSize){
+    public R<Page> page(int page, int pageSize) {
         Page<Category> pageInfo = new Page<>(page, pageSize);
         LambdaQueryWrapper<Category> qw = new LambdaQueryWrapper<>();
         qw.orderByAsc(Category::getSort);
@@ -48,7 +48,7 @@ public class CategoryController {
      * @return
      */
     @DeleteMapping()
-    public R<String> delete(long id){
+    public R<String> delete(Long id) {
         categoryService.remove(id);
         return R.success("分类信息删除成功");
     }
