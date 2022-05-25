@@ -21,4 +21,6 @@ mybatis-plus:
     banner: false
     db-config:
       id-type: assign_id
+reggie:
+  path: D:\images\
 
