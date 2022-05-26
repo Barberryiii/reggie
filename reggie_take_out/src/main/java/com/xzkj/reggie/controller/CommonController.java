@@ -28,11 +28,11 @@ public class CommonController {
      */
     @PostMapping("/upload")
     public R<String> upload(MultipartFile file){
-        // 原始文件名 abc.jpg
+        // 获取原始文件名 abc.jpg
         String originalFilename = file.getOriginalFilename();
-        // 后缀名 .jpg
+        // 获取后缀名 .jpg
         String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
-        // UUID.jpg
+        // 生成UUID并拼接后缀名得到新的文件名 UUID.jpg
         String filename = UUID.randomUUID().toString() + suffix;
 
         // 目录不存在就创建
@@ -42,6 +42,7 @@ public class CommonController {
         }
 
         try {
+            // 把文件写入指定路径
             file.transferTo(new File(basePath + filename));
         } catch (IOException e) {
             e.printStackTrace();

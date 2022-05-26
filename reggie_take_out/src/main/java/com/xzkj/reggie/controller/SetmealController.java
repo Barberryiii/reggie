@@ -126,7 +126,7 @@ public class SetmealController {
     }
 
     /**
-     *
+     * 批量启售/停售
      * @param status
      * @param ids
      * @return
@@ -142,5 +142,12 @@ public class SetmealController {
         }
         setmealService.updateBatchById(list);
         return R.success("");
+    }
+
+    @PutMapping
+    public R<String> update(@RequestBody SetmealDto setmealDto){
+        setmealService.updateWithDish(setmealDto);
+
+        return R.success("修改套餐成功");
     }
 }
