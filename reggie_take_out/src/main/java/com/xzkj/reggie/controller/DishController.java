@@ -154,10 +154,25 @@ public class DishController {
         return R.success("");
     }
 
+    /**
+     * 根据ids批量逻辑删除
+     * @param ids
+     * @return
+     */
     @DeleteMapping
     public R<String> delete(Long[] ids){
         dishService.removeByIds(Arrays.asList(ids));
 
         return R.success("");
+    }
+
+    @GetMapping("/list")
+    public R<List> list(Long categoryId){
+        LambdaQueryWrapper<Dish> qw = new LambdaQueryWrapper<>();
+        qw.eq(categoryId != null, Dish::getCategoryId, categoryId);
+        qw.eq(Dish::getStatus, 1);
+        qw.orderByAsc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
+        List<Dish> list = dishService.list(qw);
+        return R.success(list);
     }
 }
