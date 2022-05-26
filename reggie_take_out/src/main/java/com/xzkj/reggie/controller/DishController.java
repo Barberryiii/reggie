@@ -54,6 +54,10 @@ public class DishController {
         Page<Dish> pageInfo = new Page<>(page, pageSize);
         Page<DishDto> dishDtoPage = new Page<>();
 
+        List<DishDto>list = dishDtoPage.getRecords();
+        System.out.println("*****************");
+        System.out.println(list.size());
+        System.out.println("*****************");
         LambdaQueryWrapper<Dish> qw = new LambdaQueryWrapper<>();
         qw.like(StringUtils.isNotEmpty(name), Dish::getName, name)
           .orderByDesc(Dish::getUpdateTime);
@@ -64,6 +68,8 @@ public class DishController {
         BeanUtils.copyProperties(pageInfo, dishDtoPage, "records");
 
         List<Dish> records = pageInfo.getRecords();
+
+
 
         // 拷贝records
         // low逼方法
@@ -161,7 +167,7 @@ public class DishController {
      */
     @DeleteMapping
     public R<String> delete(Long[] ids){
-        dishService.removeByIds(Arrays.asList(ids));
+        dishService.removeWithFlavor(Arrays.asList(ids));
 
         return R.success("");
     }

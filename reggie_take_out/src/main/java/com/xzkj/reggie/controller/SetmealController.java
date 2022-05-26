@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xzkj.reggie.common.R;
 import com.xzkj.reggie.dto.SetmealDto;
 import com.xzkj.reggie.entity.Category;
+import com.xzkj.reggie.entity.Dish;
 import com.xzkj.reggie.entity.Setmeal;
+import com.xzkj.reggie.entity.SetmealDish;
 import com.xzkj.reggie.service.CategoryService;
 import com.xzkj.reggie.service.SetmealDishService;
 import com.xzkj.reggie.service.SetmealService;
@@ -13,6 +15,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -86,5 +90,57 @@ public class SetmealController {
         dtoPage.setRecords(dtoRecords);
 
         return R.success(dtoPage);
+    }
+
+    /**
+     * 删除套餐
+     * @param ids
+     * @return
+     */
+    @DeleteMapping
+    public R<String> delete(Long[] ids){
+        setmealService.removeWithDish(Arrays.asList(ids));
+
+        return R.success("套餐数据删除成功");
+    }
+
+    /**
+     * 根据id查询套餐数据
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    public R<SetmealDto> list(@PathVariable Long id){
+        Setmeal setmeal = setmealService.getById(id);
+
+        SetmealDto setmealDto = new SetmealDto();
+
+        BeanUtils.copyProperties(setmeal, setmealDto);
+
+        LambdaQueryWrapper<SetmealDish> qw = new LambdaQueryWrapper<>();
+        qw.eq(SetmealDish::getSetmealId, setmeal.getId());
+
+        setmealDto.setSetmealDishes(setmealDishService.list(qw));
+
+        return R.success(setmealDto);
+    }
+
+    /**
+     *
+     * @param status
+     * @param ids
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    public R<String> changeStatus(@PathVariable int status, Long[] ids){
+        List<Setmeal> list = new ArrayList<>();
+        for (Long id : ids) {
+            Setmeal setmeal = new Setmeal();
+            setmeal.setId(id);
+            setmeal.setStatus(status);
+            list.add(setmeal);
+        }
+        setmealService.updateBatchById(list);
+        return R.success("");
     }
 }

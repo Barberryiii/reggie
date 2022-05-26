@@ -65,7 +65,7 @@ public class Dish implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
 
-    @TableLogic(value = "0", delval = "1")
-    private Integer isDeleted;
+    //@TableLogic(value = "0", delval = "1")
+    //private Integer isDeleted;
 
 }
