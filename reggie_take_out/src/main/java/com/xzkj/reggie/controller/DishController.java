@@ -6,7 +6,9 @@ import com.xzkj.reggie.common.R;
 import com.xzkj.reggie.dto.DishDto;
 import com.xzkj.reggie.entity.Category;
 import com.xzkj.reggie.entity.Dish;
+import com.xzkj.reggie.entity.DishFlavor;
 import com.xzkj.reggie.service.CategoryService;
+import com.xzkj.reggie.service.DishFlavorService;
 import com.xzkj.reggie.service.DishService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -29,6 +31,9 @@ public class DishController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private DishFlavorService dishFlavorService;
 
     /**
      * 新增菜品
@@ -54,10 +59,6 @@ public class DishController {
         Page<Dish> pageInfo = new Page<>(page, pageSize);
         Page<DishDto> dishDtoPage = new Page<>();
 
-        List<DishDto>list = dishDtoPage.getRecords();
-        System.out.println("*****************");
-        System.out.println(list.size());
-        System.out.println("*****************");
         LambdaQueryWrapper<Dish> qw = new LambdaQueryWrapper<>();
         qw.like(StringUtils.isNotEmpty(name), Dish::getName, name)
           .orderByDesc(Dish::getUpdateTime);
@@ -172,7 +173,7 @@ public class DishController {
         return R.success("");
     }
 
-    @GetMapping("/list")
+/*    @GetMapping("/list")
     public R<List> list(Long categoryId){
         LambdaQueryWrapper<Dish> qw = new LambdaQueryWrapper<>();
         qw.eq(categoryId != null, Dish::getCategoryId, categoryId);
@@ -180,5 +181,45 @@ public class DishController {
         qw.orderByAsc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
         List<Dish> list = dishService.list(qw);
         return R.success(list);
+    }*/
+
+    @GetMapping("/list")
+    public R<List<DishDto>> list(Dish dish){
+        //构造查询条件
+        LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(dish.getCategoryId() != null ,Dish::getCategoryId,dish.getCategoryId());
+        //添加条件，查询状态为1（起售状态）的菜品
+        queryWrapper.eq(Dish::getStatus,1);
+
+        //添加排序条件
+        queryWrapper.orderByAsc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
+
+        List<Dish> list = dishService.list(queryWrapper);
+
+        List<DishDto> dishDtoList = list.stream().map((item) -> {
+            DishDto dishDto = new DishDto();
+
+            BeanUtils.copyProperties(item,dishDto);
+
+            Long categoryId = item.getCategoryId();//分类id
+            //根据id查询分类对象
+            Category category = categoryService.getById(categoryId);
+
+            if(category != null){
+                String categoryName = category.getName();
+                dishDto.setCategoryName(categoryName);
+            }
+
+            //当前菜品的id
+            Long dishId = item.getId();
+            LambdaQueryWrapper<DishFlavor> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+            lambdaQueryWrapper.eq(DishFlavor::getDishId,dishId);
+            //SQL:select * from dish_flavor where dish_id = ?
+            List<DishFlavor> dishFlavorList = dishFlavorService.list(lambdaQueryWrapper);
+            dishDto.setFlavors(dishFlavorList);
+            return dishDto;
+        }).collect(Collectors.toList());
+
+        return R.success(dishDtoList);
     }
 }
