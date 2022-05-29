@@ -151,12 +151,14 @@ public class DishController {
     @PostMapping("/status/{status}")
     public R<String> changeStatus(@PathVariable int status, Long[] ids){
         List<Dish> list = new ArrayList<>();
+
         for (Long id : ids) {
             Dish dish = new Dish();
             dish.setId(id);
             dish.setStatus(status);
             list.add(dish);
         }
+
         dishService.updateBatchById(list);
         return R.success("");
     }
