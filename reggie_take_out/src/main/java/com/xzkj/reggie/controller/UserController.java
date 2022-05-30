@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.xzkj.reggie.common.R;
 import com.xzkj.reggie.entity.User;
 import com.xzkj.reggie.service.UserService;
-import com.xzkj.reggie.utils.SMSUtils;
 import com.xzkj.reggie.utils.ValidateCodeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -84,5 +83,11 @@ public class UserController {
         }
 
         return R.error("登录失败");
+    }
+
+    @PostMapping("/loginout")
+    public R<String> logout(HttpSession session){
+        session.removeAttribute("user");
+        return R.success("退出成功");
     }
 }
