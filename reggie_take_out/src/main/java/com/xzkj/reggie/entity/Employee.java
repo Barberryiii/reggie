@@ -2,6 +2,7 @@ package com.xzkj.reggie.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -21,6 +22,7 @@ public class Employee implements Serializable {
 
     private String name;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     private String phone;
