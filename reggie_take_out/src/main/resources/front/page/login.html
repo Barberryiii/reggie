@@ -47,7 +47,7 @@
             data(){
                 return {
                     form:{
-                        phone:'',
+                        phone:'13487676952',
                         code:''
                     },
                     msgFlag:false,
@@ -64,7 +64,10 @@
                     if (regex.test(this.form.phone)) {
                         this.msgFlag = false
                         //this.form.code = (Math.random()*1000000).toFixed(0)
-                        sendMsgApi({phone:this.form.phone})
+                        sendMsgApi({phone:this.form.phone}).then((res)=>{
+                            this.form.code = res.data
+                        })
+
                     }else{
                         this.msgFlag = true
                     }
@@ -75,7 +78,7 @@
                         const res = await loginApi(this.form)
                         this.loading = false
                         if(res.code === 1){
-                            sessionStorage.setItem("userPhone",this.form.phone)
+                            sessionStorage.setItem("user",JSON.stringify(res.data))
                             window.requestAnimationFrame(()=>{
                                 window.location.href= '/front/index.html'
                             })                           

@@ -46,7 +46,7 @@ public class UserController {
             // 需要将生成的验证码保存到Session
             session.setAttribute(phone, code);
 
-            return R.success("短信发送成功");
+            return R.success(code);
         }
 
         return R.error("短信发送失败");
