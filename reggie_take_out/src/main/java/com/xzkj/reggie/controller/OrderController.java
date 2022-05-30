@@ -98,4 +98,10 @@ public class OrderController {
 
         return R.success(ordersPage);
     }
+
+    @PutMapping
+    public R<String> changeStatus(@RequestBody Orders orders){
+        orderService.updateById(orders);
+        return R.success("状态已变更");
+    }
 }
