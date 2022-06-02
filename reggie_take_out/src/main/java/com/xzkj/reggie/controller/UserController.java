@@ -4,10 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.xzkj.reggie.common.R;
 import com.xzkj.reggie.entity.User;
 import com.xzkj.reggie.service.UserService;
+import com.xzkj.reggie.utils.SMSUtils;
 import com.xzkj.reggie.utils.ValidateCodeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +24,18 @@ import java.util.Map;
 public class UserController {
     @Autowired
     private UserService userService;
+
+    @Value("${SMS.signName}")
+    private String signName;
+
+    @Value("${SMS.templateCode}")
+    private String templateCode;
+
+    @Value("${SMS.accessKeyId}")
+    private static String accessKeyId;
+
+    @Value("${SMS.accessKeySecret}")
+    private static String accessKeySecret;
 
     /**
      * 发送手机短信验证码
@@ -41,7 +55,7 @@ public class UserController {
             log.info("code={}", code);
 
             //todo 调用阿里云提供的短信服务API完成发送短信
-            // SMSUtils.sendMessage("瑞吉外卖", "", phone, code);
+            SMSUtils.sendMessage(accessKeyId, accessKeySecret, signName, templateCode, phone, code);
 
             // 需要将生成的验证码保存到Session
             session.setAttribute(phone, code);
